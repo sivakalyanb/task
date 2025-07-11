@@ -1,0 +1,57 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  ci-cd:
+    runs-on: ubuntu-latest
+
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+    steps:
+      # Checkout repo
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # Install dependencies
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: npm install
+
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm install
+
+      # Run tests
+      - name: Run backend tests
+        working-directory: ./backend
+        run: npm test
+
+      - name: Run frontend tests
+        working-directory: ./frontend
+        run: npm test
+
+      # Build frontend
+      - name: Build frontend
+        working-directory: ./frontend
+        run: npm run build
+
+      # Deploy (example using Docker Compose)
+      - name: Deploy with Docker Compose
+        run: |
+          docker-compose down
+          docker-compose up -d --build
+
