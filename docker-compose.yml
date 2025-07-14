@@ -1,4 +1,4 @@
-version: "3"
+version: '3.8'
 
 services:
   frontend:
@@ -13,16 +13,20 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - DATABASE_URL=postgres://postgres:password@db:5432/mydb
+      DB_HOST: postgres
+      DB_USER: postgres
+      DB_PASSWORD: password
+      DB_NAME: appdb
     depends_on:
-      - db
+      - postgres
 
-  db:
+  postgres:
     image: postgres:14
+    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: mydb
+      POSTGRES_DB: appdb
     volumes:
       - pgdata:/var/lib/postgresql/data
 
